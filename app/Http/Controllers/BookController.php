@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class BookController extends Controller {
     public function index(Request $request): Response
@@ -27,6 +28,7 @@ class BookController extends Controller {
 
     public function store(StoreBookRequest $request): RedirectResponse
     {
+        Gate::authorize('book.create');
         $book = app(CreateBook::class)(
             $request->validated(),
             $request->file('cover')
@@ -44,6 +46,7 @@ class BookController extends Controller {
 
     public function update(UpdateBookRequest $request, Book $book): RedirectResponse
     {
+        Gate::authorize('book.update', $book);
         app(UpdateBook::class)($book, $request->validated(), $request->file('cover'));
 
         return to_route('books.index')->with('success', 'Book updated');
@@ -51,6 +54,7 @@ class BookController extends Controller {
 
     public function destroy(Book $book): RedirectResponse
     {
+        Gate::authorize('book.delete', $book);
         $book->delete();
         return to_route('books.index')->with('success', 'Book deleted');
     }

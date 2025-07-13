@@ -11,9 +11,11 @@
         <div class="py-6">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between mb-4">
+                    <div v-if="$page.props.auth.user.permissions.includes('book.create')">
                     <Link href="/books/create" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
                         Add Book
                     </Link>
+                    </div>
                     <input
                         v-model="form.search"
                         @keyup.enter="applySearch"
@@ -40,14 +42,18 @@
                         <td class="px-6 py-4">{{ book.author }}</td>
                         <td class="px-6 py-4">{{ book.year }}</td>
                         <td class="px-6 py-4 space-x-2">
+                            <div v-if="$page.props.auth.user.permissions.includes('book.update')">
                             <Link
                                 :href="route('books.edit', book.id)"
                                 class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded"
                             >Edit</Link>
+                            </div>
+                            <div v-if="$page.props.auth.user.permissions.includes('book.delete')">
                             <button
                                 @click="deleteBook(book.id)"
                                 class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
                             >Delete</button>
+                            </div>
                         </td>
                     </tr>
                     <tr v-if="books.data.length === 0">
